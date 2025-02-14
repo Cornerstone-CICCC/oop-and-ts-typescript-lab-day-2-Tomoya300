@@ -10,22 +10,42 @@
 class InventoryManager {
     products = [];
     addProduct(product) {
+        this.products.push(product);
+        return `Product ${product.name} added successfully!`;
     }
     updateProduct(id, update) {
+        let thisProduct = this.products.find((product) => product.id === id);
+        if (!thisProduct)
+            return `Product not found`;
+        Object.assign(thisProduct, update);
+        return `Product ${id} updated successfully!`;
     }
     getProduct(id) {
+        let thisProduct = this.products.find((product) => product.id === id);
+        if (!thisProduct)
+            return `Product not found`;
+        return thisProduct;
     }
     getAllProducts() {
+        return this.products;
     }
     removeProduct(id) {
+        let thisProduct = this.products.find((product) => product.id === id);
+        if (!thisProduct)
+            return `Product not found`;
+        this.products = this.products.filter((product) => product.id !== id);
+        return `Product ${id} removed successfully!`;
     }
 }
 // Test cases
 const inventory = new InventoryManager();
 console.log(inventory.addProduct({ id: 1, name: "Laptop", price: 1000, stock: 5 })); // "Product Laptop added successfully!"
 console.log(inventory.addProduct({ id: 2, name: "Mouse", price: 20, stock: 50 })); // "Product Mouse added successfully!"
+console.log(inventory.products);
 console.log(inventory.updateProduct(1, { price: 900 })); // "Product 1 updated successfully!"
+console.log(inventory.products);
 console.log(inventory.getProduct(1)); // { id: 1, name: "Laptop", price: 900, stock: 5 }
 console.log(inventory.getAllProducts()); // List of all products
 console.log(inventory.removeProduct(1)); // "Product 1 removed successfully!"
 console.log(inventory.getProduct(1)); // "Product not found"
+console.log(inventory.products);
