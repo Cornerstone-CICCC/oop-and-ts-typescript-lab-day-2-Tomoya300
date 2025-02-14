@@ -25,26 +25,43 @@ interface CartItem {
 }
 
 class ShoppingCart<T extends CartItem> {
-  cart = []
+  cart: T[] = []
 
-  addToCart(product) {
-
+  addToCart(product: T): string {
+    let thisProduct = this.cart.find((item) => item.id === product.id)
+    if (!thisProduct) {
+      this.cart.push(product)
+      return `${product.name} added to cart.`
+    } else {
+      thisProduct.quantity += product.quantity
+      return `Updated quantity of ${product.name} to ${thisProduct.quantity}.`
+    }
   }
 
-  updateQuantity(id, qty) {
-
+  updateQuantity(id: number, qty: number): string {
+    let thisProduct = this.cart.find((item) => item.id === id)
+    if (!thisProduct) return `Product not found`
+    thisProduct.quantity = qty
+    return `Updated quantity of ${thisProduct.name} to ${thisProduct.quantity}.`
   }
 
-  getTotalPrice() {
-
+  getTotalPrice(): number {
+    let total = this.cart.reduce((acc, item) => acc + item.price, 0)
+    return total
   }
 
-  getProductsOfCategory(category) {
-
+  getProductsOfCategory(category): T[] | string {
+    let itemsOfCategory = this.cart.filter((item) => item.category === category)
+    if (itemsOfCategory.length === 0) {
+      return `Items of ${category} not found`
+    }
+    return itemsOfCategory
   }
 
-  removeFromCart(id) {
-
+  removeFromCart(id: number): string {
+    let removedItem = this.cart.find((item) => item.id === id)
+    let newCart = this.cart.filter((item) => item.id !== id)
+    return `${removedItem.name} removed from cart.`
   }
 }
 
@@ -57,3 +74,4 @@ console.log(cart.updateQuantity(1, 3)); // "Updated quantity of Headphones to 3.
 console.log(cart.getProductsOfCategory("Electronics")) // Should return all electronics
 console.log(cart.getTotalPrice()); // Should return the total cost of items
 console.log(cart.removeFromCart(2)); // "Keyboard removed from cart."
+console.log(cart.getProductsOfCategory('Fruit'))
