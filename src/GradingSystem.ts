@@ -20,26 +20,62 @@ interface Student {
 }
 
 class Gradebook<T extends Student> {
-  students = []
+  students: T[] = [];
 
-  addStudent(student) {
-
+  addStudent(student: T): string {
+    this.students.push(student);
+    return `${student.name} added to the gradebook.`;
   }
 
-  addGrade(id, grade) {
-
+  addGrade(id: number, grade: Grade): string {
+    this.students.forEach((student) => {
+      if (student.id === id) {
+        student.grades.push(grade)
+      }
+    })
+    return `Grade recorded for ${grade.subject}.`;
   }
 
-  getAverageGrade(id) {
-
+  getAverageGrade(id: number): number {
+    let thisStudent
+    this.students.forEach((student) => {
+      if (student.id === id) {
+        thisStudent = student
+      }
+    })
+    let sumOfAllGrades = thisStudent.grades.reduce((acc, grade) => acc + grade.grade, 0)
+    return sumOfAllGrades / thisStudent.grades.length
   }
 
-  getStudentGrades(id) {
-
+  getStudentGrades(id: number): Grade[] {
+    let thisStudent
+    this.students.forEach((student) => {
+      if (student.id === id) {
+        thisStudent = student
+      }
+    })
+    return thisStudent.grades
   }
 
-  updateSubjectGrade(id, subject, newGrade) {
-
+  updateSubjectGrade(id: number, subject: string, newGrade: number): string {
+    let thisStudent
+    this.students.forEach((student) => {
+      if (student.id === id) {
+        thisStudent = student
+      }
+    })
+    let currentGrade
+    thisStudent.grades.forEach((grade) => {
+      if (grade.subject === subject) {
+        currentGrade = grade.grade
+      }
+    })
+    thisStudent.grades.forEach((grade) => {
+      if (grade.subject === subject) {
+        grade.grade = newGrade
+      }
+    })
+    return `Grade updated for ${subject} from ${currentGrade} to ${newGrade}.`;
   }
 }
 
