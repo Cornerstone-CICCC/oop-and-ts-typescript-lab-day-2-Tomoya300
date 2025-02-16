@@ -10,14 +10,37 @@
 class MyStorage {
     items = [];
     addItem(item) {
+        this.items.push(item);
+        if (typeof item === 'object') {
+            if ('name' in item) {
+                return `User ${item.name} added.`;
+            }
+        }
+        return `${item} added to storage.`;
     }
     getItems() {
+        return this.items;
     }
     removeItem(id) {
+        let removedItem = this.items.find((item) => item === id);
+        this.items = this.items.filter((item) => item !== id);
+        return `${removedItem} removed from storage.`;
     }
     findItem(prop, val) {
+        let searchedItem = this.items.find((item) => typeof item === "object" && item !== null && prop in item && item[prop] === val);
+        return searchedItem;
     }
     updateItem(prop, id, update) {
+        let updatedItemIndex = this.items.findIndex((item) => typeof item === 'object' && item !== null && prop in item && item[prop] === id);
+        if (updatedItemIndex === -1) {
+            return 'Item not found.';
+        }
+        else {
+            this.items[updatedItemIndex] = update;
+            if (typeof update === "object" && update !== null && 'name' in update && typeof update.name === 'string') {
+                return `${update.name} updated successfully.`;
+            }
+        }
     }
 }
 // Test cases
@@ -27,6 +50,7 @@ console.log(numberStrStorage.addItem(20)); // "20 added to storage."
 console.log(numberStrStorage.getItems()); // [10, 20]
 console.log(numberStrStorage.removeItem(10)); // "10 removed from storage."
 console.log(numberStrStorage.getItems()); // [20]
+console.log(numberStrStorage.addItem('bob'));
 const userStorage = new MyStorage();
 console.log(userStorage.addItem({ id: 1, name: "Alice" })); // "User Alice added."
 console.log(userStorage.addItem({ id: 2, name: "Bob" })); // "User Bob added."
@@ -34,3 +58,5 @@ console.log(userStorage.getItems()); // [{ id: 1, name: "Alice" }, { id: 2, name
 console.log(userStorage.findItem("name", "Alice")); // { id: 1, name: "Alice" }
 console.log(userStorage.updateItem("id", 1, { id: 1, name: "Alice Updated" })); // "Alice updated successfully."
 console.log(userStorage.getItems()); // [{ id: 1, name: "Alice Updated" }, { id: 2, name: "Bob" }]
+console.log(userStorage.addItem('bob')); // "bob added to storage."
+console.log(userStorage.items); // [{ id: 1, name: "Alice Updated" }, { id: 2, name: "Bob" }, 'bob']
